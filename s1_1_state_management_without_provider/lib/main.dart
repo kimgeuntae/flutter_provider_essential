@@ -55,9 +55,12 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             SizedBox(height: 20.0),
-            CounterA(),
+            CounterA(
+              counter: counter,
+              increment: increment,
+            ),
             SizedBox(height: 20.0),
-            Middle(),
+            Middle(counter: counter),
           ],
         ),
       ),
@@ -66,8 +69,13 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class CounterA extends StatelessWidget {
+  final int counter;
+  final void Function() increment;
+
   const CounterA({
     Key? key,
+    required this.counter,
+    required this.increment,
   }) : super(key: key);
 
   @override
@@ -78,11 +86,11 @@ class CounterA extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            '0',
+            '$counter',
             style: TextStyle(fontSize: 48.0),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: increment,
             child: Text(
               'Increment',
               style: TextStyle(fontSize: 20.0),
@@ -95,8 +103,11 @@ class CounterA extends StatelessWidget {
 }
 
 class Middle extends StatelessWidget {
+  final int counter;
+
   const Middle({
     Key? key,
+    required this.counter,
   }) : super(key: key);
 
   @override
@@ -108,7 +119,7 @@ class Middle extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          CounterB(),
+          CounterB(counter: counter),
           SizedBox(width: 20.0),
           Sibling(),
         ],
@@ -118,8 +129,11 @@ class Middle extends StatelessWidget {
 }
 
 class CounterB extends StatelessWidget {
+  final int counter;
+
   const CounterB({
     Key? key,
+    required this.counter,
   }) : super(key: key);
 
   @override
@@ -128,7 +142,7 @@ class CounterB extends StatelessWidget {
       color: Colors.yellow[100],
       padding: const EdgeInsets.all(10.0),
       child: Text(
-        '0',
+        '$counter',
         style: TextStyle(fontSize: 24.0),
       ),
     );
