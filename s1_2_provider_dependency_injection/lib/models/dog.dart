@@ -8,4 +8,9 @@ class Dog {
     required this.breed,
     this.age = 1,
   });
+
+  void grow() {
+    age++;
+    print('age: $age');
+  }
 }
