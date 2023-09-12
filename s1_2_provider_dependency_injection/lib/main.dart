@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:s1_2_provider_dependency_injection/models/dog.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,13 +11,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Provider 02',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return Provider(
+      // 하위 위젯에서 참조 할수있도록 상단에 provider를 선언
+      create: (context) => Dog(name: 'Sun', breed: 'BullDog', age: 3),
+      child: MaterialApp(
+        title: 'Provider 02',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const MyHomePage(),
       ),
-      home: const MyHomePage(),
     );
   }
 }
@@ -35,7 +41,9 @@ class MyHomePage extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              '- name: Dog name',
+              // of를 사용하여 상위 위젯에서 Dog을 찾음.
+              // 찾는 대상(타입)을 꼭 선언해야함.
+              '- name: ${Provider.of<Dog>(context).name}',
               style: TextStyle(fontSize: 20.0),
             ),
             SizedBox(height: 10.0),
@@ -55,7 +63,7 @@ class BreedAndAge extends StatelessWidget {
     return Column(
       children: [
         Text(
-          '- breed: Dog breed',
+          '- breed: ${Provider.of<Dog>(context).breed}',
           style: TextStyle(fontSize: 20.0),
         ),
         SizedBox(height: 10.0),
@@ -73,7 +81,7 @@ class Age extends StatelessWidget {
     return Column(
       children: [
         Text(
-          '- age: Dog age',
+          '- age: ${Provider.of<Dog>(context).age}',
           style: TextStyle(fontSize: 20.0),
         ),
       ],
