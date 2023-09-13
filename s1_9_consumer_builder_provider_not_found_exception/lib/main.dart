@@ -41,6 +41,35 @@ class MyHomePage extends StatelessWidget {
       ),
       body: ChangeNotifierProvider(
         create: (_) => Foo(),
+        // Consumer 이용
+        child: Consumer<Foo>(
+          builder: (BuildContext context, Foo foo, Widget? _) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${foo.value}',
+                    style: TextStyle(fontSize: 40),
+                  ),
+                  SizedBox(height: 20.0),
+                  ElevatedButton(
+                    onPressed: () => foo.changeValue(),
+                    child: Text(
+                      'Change Value',
+                      style: TextStyle(fontSize: 20.0),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+      /*
+      // 빌더 패턴 이용
+      body: ChangeNotifierProvider(
+        create: (_) => Foo(),
         builder: (BuildContext context, Widget? _) {
           return Center(
             child: Column(
@@ -64,6 +93,7 @@ class MyHomePage extends StatelessWidget {
           );
         },
       ),
+       */
       /*
       // 조상 context를 가져다 써서 ProviderNotFoundException 가 발생함.
       body: ChangeNotifierProvider(
