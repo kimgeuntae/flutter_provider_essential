@@ -1,125 +1,135 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'models/babies.dart';
+import 'models/dog.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => Dog(name: 'dog06', breed: 'breed06', age: 3),
+        ),
+
+        /// 초기 데이터로 빌드 1번, Future가 끝나면 또 리빌드로 총 빌드 2번함.
+        FutureProvider(
+          // Future 가 끝날 동안 표시될 초기 데이터
+          initialData: 0,
+          create: (context) {
+            // ChangeNotifierProvider 가 상위 위젯이기때문에 가져올수 있음.
+            final int dogAge = context.read<Dog>().age;
+            final babies = Babies(age: dogAge);
+            // Future를 리턴하는 거라면 FutureProvider 내에서 사용될수 있다.
+            // getBabies의 리턴 타입이 int이기때문에 FutureProvider<int>
+            return babies.getBabies();
+          },
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Provider 06',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const MyHomePage(),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text('Provider 06'),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
+          mainAxisSize: MainAxisSize.min,
+          children: [
             Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+              // '- name: ${Provider.of<Dog>(context, listen: false).name}',
+              '- name: ${context.watch<Dog>().name}', // select 써도 괜찮
+              // watch: listen object의 변화를 감지하여 리빌드
+              style: TextStyle(fontSize: 20.0),
             ),
+            SizedBox(height: 10.0),
+            BreedAndAge(),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class BreedAndAge extends StatelessWidget {
+  const BreedAndAge({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          // '- breed: ${Provider.of<Dog>(context, listen: false).breed}',
+          '- breed: ${context.select<Dog, String>((Dog dog) => dog.breed)}',
+          // select: listen 하고 싶은 프로퍼티(breed)의 변화만 감지하여 리빌드
+          style: TextStyle(fontSize: 20.0),
+        ),
+        SizedBox(height: 10.0),
+        Age(),
+      ],
+    );
+  }
+}
+
+class Age extends StatelessWidget {
+  const Age({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          // '- age: ${Provider.of<Dog>(context).age}',
+          '- age: ${context.select<Dog, int>((Dog dog) => dog.age)}',
+          // select: listen 하고 싶은 프로퍼티(age)의 변화만 감지하여 리빌드
+          style: TextStyle(fontSize: 20.0),
+        ),
+        SizedBox(height: 10.0),
+        Text(
+          // Babies.getBabies의 return 타입이 int 이기때문에 타입을 int 로 지정.
+          '- number of babies: ${context.read<int>()}',
+          // watch 는 future의 delayed 3초가 끝나도 리빌드 하지않음. listen false기 때문에.
+          /// '- number of babies: ${context.watch<int>()}',
+          // watch 는 future의 delayed 3초가 끝나면 값의 변화를 감지하고 리빌드함.
+          style: TextStyle(fontSize: 20.0),
+        ),
+        SizedBox(height: 20.0),
+        ElevatedButton(
+          onPressed: () => context.read<Dog>().grow(),
+          // 버튼은 리빌드 될 필요가 없기때문에 listen false를 강제하기 때문에 read 를 써서 listen false 해줘야함
+          child: Text(
+            'Grow',
+            style: TextStyle(fontSize: 20.0),
+          ),
+        ),
+      ],
     );
   }
 }
