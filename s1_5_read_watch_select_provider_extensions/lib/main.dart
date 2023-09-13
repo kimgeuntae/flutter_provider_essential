@@ -12,9 +12,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => Dog(name: 'dog04', breed: 'breed04'),
+      create: (context) => Dog(name: 'dog05', breed: 'breed05'),
       child: MaterialApp(
-        title: 'Provider 04',
+        title: 'Provider 05',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
@@ -37,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Provider 04'),
+        title: Text('Provider 05'),
       ),
       body: Center(
         child: Column(
