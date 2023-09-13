@@ -39,6 +39,11 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Provider 09'),
       ),
+
+      /// ProviderNotFoundException 의 해결방법
+      /// 1. 가능하다면 위젯 트리를 더 위로올린다.
+      /// 2. 빌더 패턴을 사용한다.
+      /// 3. consumer를 사용한다(빌더 패턴을 사용하기때문에)
       body: ChangeNotifierProvider(
         create: (_) => Foo(),
         // Consumer 이용
