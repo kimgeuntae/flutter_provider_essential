@@ -83,8 +83,8 @@ class Age extends StatelessWidget {
     return Column(
       children: [
         Text(
-          '- age: ${Provider.of<Dog>(context, listen: false).age}',
-          // listen false 를 주면 상태 변화해도 리빌드 하지않음.
+          '- age: ${Provider.of<Dog>(context).age}',
+          // 리 랜더링이 필요한 부분은 listen false를 주면 안됨
           style: TextStyle(fontSize: 20.0),
         ),
         SizedBox(height: 20.0),
