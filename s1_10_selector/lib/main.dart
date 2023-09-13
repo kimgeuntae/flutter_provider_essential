@@ -12,9 +12,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => Dog(name: 'dog08', breed: 'breed08', age: 3),
+      create: (context) => Dog(name: 'dog10', breed: 'breed10', age: 3),
       child: MaterialApp(
-        title: 'Provider 08',
+        title: 'Provider 10',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
@@ -37,10 +37,15 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Provider 08'),
+        title: Text('Provider 10'),
       ),
-      body: Consumer<Dog>(
-        builder: (BuildContext context, Dog dog, Widget? child) {
+
+      /// selector
+      /// 인스턴스의 프로퍼티가 많은 경우
+      /// selector 콜백에서 업데이트할 항목만 골라서 빌더로 넘겨줌
+      body: Selector<Dog, String>(
+        selector: (BuildContext context, Dog dog) => dog.name,
+        builder: (BuildContext context, name, Widget? child) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -50,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child!,
                 SizedBox(height: 10.0),
                 Text(
-                  '- name: ${dog.name}',
+                  '- name: $name',
                   style: TextStyle(fontSize: 20.0),
                 ),
                 SizedBox(height: 10.0),
@@ -74,12 +79,13 @@ class BreedAndAge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Dog>(
-      builder: (BuildContext _, Dog dog, Widget? __) {
+    return Selector<Dog, String>(
+      selector: (BuildContext context, Dog dog) => dog.breed,
+      builder: (BuildContext _, String breed, Widget? __) {
         return Column(
           children: [
             Text(
-              '- breed: ${dog.breed}',
+              '- breed: $breed',
               style: TextStyle(fontSize: 20.0),
             ),
             SizedBox(height: 10.0),
@@ -96,17 +102,19 @@ class Age extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Dog>(
-      builder: (_, Dog dog, __) {
+    return Selector<Dog, int>(
+      selector: (BuildContext context, Dog dog) => dog.age,
+      builder: (_, int age, __) {
         return Column(
           children: [
             Text(
-              '- age: ${dog.age}',
+              '- age: $age',
               style: TextStyle(fontSize: 20.0),
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () => dog.grow(),
+              /// 넘겨받은건 age 이기때문에 빌더내에서 dog object를 접근할 수 없어서 context.read 로 찾아야함.
+              onPressed: () => context.read<Dog>().grow(),
               child: Text(
                 'Grow',
                 style: TextStyle(fontSize: 20.0),
