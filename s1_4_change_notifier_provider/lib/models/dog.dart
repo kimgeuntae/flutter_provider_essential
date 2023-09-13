@@ -15,5 +15,6 @@ class Dog with ChangeNotifier {
     age++;
     // 상태 변화 감지
     notifyListeners();
+    print(age);
   }
 }
