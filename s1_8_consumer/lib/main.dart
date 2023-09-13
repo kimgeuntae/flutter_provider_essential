@@ -47,6 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 child!,
+                child!,
                 SizedBox(height: 10.0),
                 Text(
                   '- name: ${dog.name}',
