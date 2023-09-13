@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,23 +39,26 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Provider 09'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'value',
-              style: TextStyle(fontSize: 40),
-            ),
-            SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () {},
-              child: Text(
-                'Change Value',
-                style: TextStyle(fontSize: 20.0),
+      body: ChangeNotifierProvider(
+        create: (_) => Foo(),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '${context.watch<Foo>().value}',
+                style: TextStyle(fontSize: 40),
               ),
-            ),
-          ],
+              SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: () => context.read<Foo>().changeValue(),
+                child: Text(
+                  'Change Value',
+                  style: TextStyle(fontSize: 20.0),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
