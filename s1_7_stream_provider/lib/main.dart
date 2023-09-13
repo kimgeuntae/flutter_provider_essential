@@ -31,6 +31,18 @@ class MyApp extends StatelessWidget {
             return babies.getBabies();
           },
         ),
+        StreamProvider(
+          initialData: 'Bark 0 times',
+          create: (context) {
+            // ChangeNotifierProvider 가 상위 위젯이기때문에 가져올수 있음.
+            // final int dogAge = context.watch<Dog>().age;
+            /// create 는 한번만 불리기때문에 리빌드 될 일이 없는데 watch를 주면 문맥이 안맞아서 error 발생
+            final int dogAge = context.read<Dog>().age;
+
+            final babies = Babies(age: dogAge * 2);
+            return babies.bark();
+          },
+        )
       ],
       child: MaterialApp(
         title: 'Provider 06',
@@ -118,6 +130,12 @@ class Age extends StatelessWidget {
           // watch 는 future의 delayed 3초가 끝나도 리빌드 하지않음. listen false기 때문에.
           /// '- number of babies: ${context.watch<int>()}',
           // watch 는 future의 delayed 3초가 끝나면 값의 변화를 감지하고 리빌드함.
+          style: TextStyle(fontSize: 20.0),
+        ),
+        SizedBox(height: 10.0),
+        Text(
+          // '- ${context.read<String>()}', // read의 경우 listen false 라서 yield 받아도 리빌드 되지않음.
+          '- ${context.watch<String>()}',
           style: TextStyle(fontSize: 20.0),
         ),
         SizedBox(height: 20.0),
