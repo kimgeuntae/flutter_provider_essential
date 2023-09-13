@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:s1_6_future_provider/models/babies.dart';
 import 'models/dog.dart';
 
 void main() {
@@ -11,10 +12,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => Dog(name: 'dog05', breed: 'breed05', age: 3),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => Dog(name: 'dog06', breed: 'breed06', age: 3),
+        ),
+
+        /// 초기 데이터로 빌드 1번, Future가 끝나면 또 리빌드로 총 빌드 2번함.
+        FutureProvider(
+          // Future 가 끝날 동안 표시될 초기 데이터
+          initialData: 0,
+          create: (context) {
+            // ChangeNotifierProvider 가 상위 위젯이기때문에 가져올수 있음.
+            final int dogAge = context.read<Dog>().age;
+            final babies = Babies(age: dogAge);
+            // Future를 리턴하는 거라면 FutureProvider 내에서 사용될수 있다.
+            // getBabies의 리턴 타입이 int이기때문에 FutureProvider<int>
+            return babies.getBabies();
+          },
+        ),
+      ],
       child: MaterialApp(
-        title: 'Provider 05',
+        title: 'Provider 06',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
@@ -37,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Provider 05'),
+        title: Text('Provider 06'),
       ),
       body: Center(
         child: Column(
@@ -90,6 +109,15 @@ class Age extends StatelessWidget {
           // '- age: ${Provider.of<Dog>(context).age}',
           '- age: ${context.select<Dog, int>((Dog dog) => dog.age)}',
           // select: listen 하고 싶은 프로퍼티(age)의 변화만 감지하여 리빌드
+          style: TextStyle(fontSize: 20.0),
+        ),
+        SizedBox(height: 10.0),
+        Text(
+          // Babies.getBabies의 return 타입이 int 이기때문에 타입을 int 로 지정.
+          '- number of babies: ${context.read<int>()}',
+          // watch 는 future의 delayed 3초가 끝나도 리빌드 하지않음. listen false기 때문에.
+          /// '- number of babies: ${context.watch<int>()}',
+          // watch 는 future의 delayed 3초가 끝나면 값의 변화를 감지하고 리빌드함.
           style: TextStyle(fontSize: 20.0),
         ),
         SizedBox(height: 20.0),
