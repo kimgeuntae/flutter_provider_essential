@@ -46,11 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                // 리빌드 하지않을 위젯
-                Text(
-                  'I like dogs very much',
-                  style: TextStyle(fontSize: 20.0),
-                ),
+                child!,
                 SizedBox(height: 10.0),
                 Text(
                   '- name: ${dog.name}',
@@ -62,6 +58,11 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           );
         },
+        // 리빌드 하지않을 위젯
+        child: Text(
+          'I like dogs very much',
+          style: TextStyle(fontSize: 20.0),
+        ),
       ),
     );
   }
