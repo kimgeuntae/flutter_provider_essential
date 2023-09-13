@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'models/dog.dart';
 
 void main() {
@@ -10,13 +11,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Provider 03',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return ChangeNotifierProvider(
+      create: (context) => Dog(name: 'dog04', breed: 'breed04'),
+      child: MaterialApp(
+        title: 'Provider 04',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const MyHomePage(),
       ),
-      home: const MyHomePage(),
     );
   }
 }
@@ -29,33 +33,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final Dog dog = Dog(name: 'Dog3', breed: 'breadDog3');
-
-  void dogListener() {
-    print('dogListener age: ${dog.age}');
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // notifyListener 가 실행될때마다 호출될 listner 등록
-    dog.addListener(dogListener);
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    // add된 listener는 자동으로 dispose 되지않아서 수동으로 해줘야함.
-    dog.removeListener(dogListener);
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Provider 03'),
+        title: Text('Provider 04'),
       ),
       body: Center(
         child: Column(
@@ -63,11 +45,11 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              '- name: ${dog.name}',
+              '- name: ${Provider.of<Dog>(context, listen: false).name}',
               style: TextStyle(fontSize: 20.0),
             ),
             SizedBox(height: 10.0),
-            BreedAndAge(dog: dog),
+            BreedAndAge(),
           ],
         ),
       ),
@@ -76,47 +58,38 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class BreedAndAge extends StatelessWidget {
-  final Dog dog;
-
-  const BreedAndAge({
-    Key? key,
-    required this.dog,
-  }) : super(key: key);
+  const BreedAndAge({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Text(
-          '- breed: ${dog.breed}',
+          '- breed: ${Provider.of<Dog>(context, listen: false).breed}',
           style: TextStyle(fontSize: 20.0),
         ),
         SizedBox(height: 10.0),
-        Age(dog: dog),
+        Age(),
       ],
     );
   }
 }
 
 class Age extends StatelessWidget {
-  final Dog dog;
-
-  const Age({
-    Key? key,
-    required this.dog,
-  }) : super(key: key);
+  const Age({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Text(
-          '- age: ${dog.age}',
+          '- age: ${Provider.of<Dog>(context).age}',
           style: TextStyle(fontSize: 20.0),
         ),
         SizedBox(height: 20.0),
         ElevatedButton(
-          onPressed: () => dog.grow(),
+          onPressed: () => Provider.of<Dog>(context, listen: false).grow(),
+          // UI를 변경시킬 필요가 없으므로 listen false
           child: Text(
             'Grow',
             style: TextStyle(fontSize: 20.0),
